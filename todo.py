@@ -32,7 +32,7 @@ def addTodo(todoItems):
 
 # ========================================================
 def pendingTodo(*args):
-	print(args)
+
 	todoItems = []
 	todoItemNo = 0
 
@@ -118,6 +118,7 @@ def removeTask(args):
 		pass
 
 	return (status,taskName,todoItemNo)
+
 
 
 
