@@ -1,10 +1,7 @@
 import os
 import sys
 from datetime import datetime
-# print(sys.argv)
 
-# cwd = os.getcwd()
-# print(cwd)
 
 # =========================================================
 def docs():
@@ -53,42 +50,61 @@ def pendingTodo():
 	else : print("There are no pending todos!")
 
 
+
+# =======================================================
+def deleteTodo():
+	
+	isDeleted , taskName , todoItemNo = removeTask()
+
+	if(isDeleted): print("Deleted todo #{}".format(todoItemNo))
+	elif(todoItemNo==None) : print("Error: Missing NUMBER for deleting todo.")
+	else: print("Error: todo #{} does not exist. Nothing deleted.".format(todoItemNo))
+
+
+# =======================================================
+def doneTodo():
+	
+	isDone , taskName , todoItemNo = removeTask()
+	
+	if(isDone):
+		with open("done.txt",'a+') as todoFile:
+			currentDate = datetime.now().date().isoformat()
+			todoFile.write("x {} {}".format(currentDate,taskName))
+			print("Marked todo #{} as done.".format(todoItemNo))
+
+	elif(todoItemNo==None) : print("Error: Missing NUMBER for marking todo as done.")
+	else: print("Error: todo #{} does not exist.".format(todoItemNo))
+
+
+
 # ========================================================
-def deleteTodo(todoItemNo=None):
-	task = ""
+def removeTask():
+	
+	status = False
+	taskName = ""
+	todoItemNo = None
+
 	try:
-		todoItemNo = int(sys.argv[2])
-		assert todoItemNo!=0
+		todoItemNo= int(sys.argv[2])
+		assert todoItemNo != 0
 		with open("todo.txt",'r+') as todoFile:
 			todoItems = todoFile.readlines()
-			task = todoItems[todoItemNo-1]
+			taskName = todoItems[todoItemNo-1]
+			# print(task)
 			del todoItems[todoItemNo-1]
 			todoFile.truncate(0)
 			todoFile.flush()
 			todoFile.seek(0)
 			for todo in todoItems:
 				todoFile.write(todo)
-			print("Deleted todo #{}".format(todoItemNo))
 
-	except (IndexError,AssertionError) as err:
-		if(todoItemNo==None): print("Error: Missing NUMBER for deleting todo.") 
-		else : print("Error: todo #{} does not exist. Nothing deleted.".format(todoItemNo))
+			status=True
 
-	return task
+	except (IndexError,AssertionError,FileNotFoundError) as err:
+		pass
 
-# ========================================================
-def doneTodo():
+	return (status,taskName,todoItemNo)
 
-	try:
-		todoItemNo = sys.argv[2]
-		task = deleteTodo(todoItemNo)
-		with open("done.txt",'a+') as todoFile:
-			currentDate = datetime.now().date().isoformat()
-			todoFile.write("x {} {}".format(currentDate,task))
-			print("Marked todo #{} as done.".format(todoItemNo))
-	
-	except IndexError:
-		print("Error: todo #{} does not exist.".format(todoItemNo))
 
 
 # ========================================================
@@ -100,6 +116,7 @@ def reportTodo():
 		doneTodos = len(doneFile.readlines())
 	currentDate = datetime.now().date().isoformat()
 	print("{} Pending : {} Completed : {}".format(currentDate,pendingTodos,doneTodos))
+
 
 # ========================================================
 def cmdSwitcher(cmd):
@@ -119,4 +136,5 @@ def cmdSwitcher(cmd):
 
 if(len(sys.argv)==1): docs()
 else: cmdSwitcher(sys.argv[1])
+
 
