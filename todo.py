@@ -58,13 +58,17 @@ def pendingTodo(*args):
 def deleteTodo(todoItemNoList):
 
 	todoItemNoList = list(map(int ,todoItemNoList))
+	todoItemNoList.sort()
 	ItemNoOffset = 0	# to get updated todoItemNo 
 
 	if(todoItemNoList==[]):
 		print("Error: Missing NUMBER for deleting todo.")
 	
 	for todoItemNo in todoItemNoList:
-		todoItemNo -= ItemNoOffset
+		
+		if(todoItemNo != 0):
+			todoItemNo -= ItemNoOffset
+		
 		isDeleted , taskName , todoItemNo = removeTask(todoItemNo)
 
 		if(isDeleted):
@@ -76,19 +80,24 @@ def deleteTodo(todoItemNoList):
 		else:
 			print("Error: todo #{} does not exist. Nothing deleted.".format(todoItemNo+ItemNoOffset))
 
-		ItemNoOffset += 1
+		if(todoItemNo != 0):
+			ItemNoOffset += 1
 
 # =======================================================
 # args => list of todoItemNo
 def doneTodo(todoItemNoList):
 	todoItemNoList = list(map(int ,todoItemNoList))
+	todoItemNoList.sort()
 	ItemNoOffset = 0	# to get updated todoItemNo 
 
 	if(todoItemNoList==[]):
 		print("Error: Missing NUMBER for marking todo as done.")
 
 	for todoItemNo in todoItemNoList:
-		todoItemNo -= ItemNoOffset	
+		
+		if(todoItemNo != 0):
+			todoItemNo -= ItemNoOffset	
+		
 		isDone , taskName , todoItemNo = removeTask(todoItemNo)
 		
 		if(isDone):
@@ -103,7 +112,8 @@ def doneTodo(todoItemNoList):
 		else:
 			print("Error: todo #{} does not exist.".format(todoItemNo+ItemNoOffset))
 
-		ItemNoOffset += 1
+		if(todoItemNo != 0):
+			ItemNoOffset += 1
 
 
 # ========================================================
@@ -112,7 +122,6 @@ def doneTodo(todoItemNoList):
 # helper function for deleteTodo() , doneTodo()
 def removeTask(todoItemNo):
 
-	print(todoItemNo)
 	status = False
 	taskName = ""
 	todoItems = ["todo_txt_file"]
