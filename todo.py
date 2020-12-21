@@ -42,6 +42,7 @@ def pendingTodo(*args):
 			todoItemNo= len(todoItems)
 	
 		if(todoItemNo>0):
+			#print todos in reverse order
 			for todo in todoItems:
 					print("[{}] {}".format(todoItemNo,todo),end="")
 					todoItemNo-=1
@@ -107,8 +108,8 @@ def removeTask(args):
 			taskName = todoItems[todoItemNo-1]
 			del todoItems[todoItemNo-1]
 			todoFile.truncate(0)
-			todoFile.flush()
-			todoFile.seek(0)
+			todoFile.flush()	#flushes the internal buffer
+			todoFile.seek(0)	#place cursor at begining
 			for todo in todoItems:
 				todoFile.write(todo)
 
@@ -116,6 +117,10 @@ def removeTask(args):
 
 	except (IndexError,AssertionError,FileNotFoundError) as err:
 		pass
+
+	# handles ./todo del <not_integer> exception
+	except ValueError:
+		docs()
 
 	return (status,taskName,todoItemNo)
 
@@ -165,7 +170,10 @@ def cmdSwitcher(args):
 
 # ========================================================
 # Starting point
-if(len(sys.argv)==1): docs()
-else: cmdSwitcher(sys.argv[1:])
+if(len(sys.argv)==1):
+	docs()
+
+else:
+	cmdSwitcher(sys.argv[1:])
 
 
