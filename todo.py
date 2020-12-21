@@ -54,62 +54,79 @@ def pendingTodo(*args):
 
 
 # =======================================================
-# args => list of todoItemNo
-def deleteTodo(args):
-	
-	isDeleted , taskName , todoItemNo = removeTask(args)
+# Handles multiple delete => ./todo del 2 3 4
+def deleteTodo(todoItemNoList):
 
-	if(isDeleted):
-		print("Deleted todo #{}".format(todoItemNo))
-	
-	elif(todoItemNo==None):
+	todoItemNoList = list(map(int ,todoItemNoList))
+	ItemNoOffset = 0	# to get updated todoItemNo 
+
+	if(todoItemNoList==[]):
 		print("Error: Missing NUMBER for deleting todo.")
 	
-	else:
-		print("Error: todo #{} does not exist. Nothing deleted.".format(todoItemNo))
+	for todoItemNo in todoItemNoList:
+		todoItemNo -= ItemNoOffset
+		isDeleted , taskName , todoItemNo = removeTask(todoItemNo)
 
+		if(isDeleted):
+			print("Deleted todo #{}".format(todoItemNo+ItemNoOffset))
+		
+		# elif(todoItemNo==None):
+		# 	print("Error: Missing NUMBER for deleting todo.")
+		
+		else:
+			print("Error: todo #{} does not exist. Nothing deleted.".format(todoItemNo+ItemNoOffset))
+
+		ItemNoOffset += 1
 
 # =======================================================
 # args => list of todoItemNo
-def doneTodo(args):
-	
-	isDone , taskName , todoItemNo = removeTask(args)
-	
-	if(isDone):
-		with open("done.txt",'a+') as todoFile:
-			currentDate = datetime.now().date().isoformat()
-			todoFile.write("x {} {}".format(currentDate,taskName))
-			print("Marked todo #{} as done.".format(todoItemNo))
+def doneTodo(todoItemNoList):
+	todoItemNoList = list(map(int ,todoItemNoList))
+	ItemNoOffset = 0	# to get updated todoItemNo 
 
-	elif(todoItemNo==None) :
+	if(todoItemNoList==[]):
 		print("Error: Missing NUMBER for marking todo as done.")
-	
-	else:
-		print("Error: todo #{} does not exist.".format(todoItemNo))
 
+	for todoItemNo in todoItemNoList:
+		todoItemNo -= ItemNoOffset	
+		isDone , taskName , todoItemNo = removeTask(todoItemNo)
+		
+		if(isDone):
+			with open("done.txt",'a+') as todoFile:
+				currentDate = datetime.now().date().isoformat()
+				todoFile.write("x {} {}".format(currentDate,taskName))
+				print("Marked todo #{} as done.".format(todoItemNo+ItemNoOffset))
+
+		# elif(todoItemNo==None) :
+		# 	print("Error: Missing NUMBER for marking todo as done.")
+		
+		else:
+			print("Error: todo #{} does not exist.".format(todoItemNo+ItemNoOffset))
+
+		ItemNoOffset += 1
 
 
 # ========================================================
 # args => list of todoItemNo
 # Remove a task and return (status,taskName,todoItemNo)
 # helper function for deleteTodo() , doneTodo()
-def removeTask(args):
+def removeTask(todoItemNo):
 
+	print(todoItemNo)
 	status = False
 	taskName = ""
-	todoItemNo = None
+	todoItems = ["todo_txt_file"]
 
 	try:
-		todoItemNo= int(args[0])
 		assert todoItemNo != 0
 		with open("todo.txt",'r+') as todoFile:
-			todoItems = todoFile.readlines()
-			taskName = todoItems[todoItemNo-1]
-			del todoItems[todoItemNo-1]
+			todoItems += todoFile.readlines()
+			taskName = todoItems[todoItemNo]
+			del todoItems[todoItemNo]
 			todoFile.truncate(0)
 			todoFile.flush()
 			todoFile.seek(0)
-			for todo in todoItems:
+			for todo in todoItems[1:]:
 				todoFile.write(todo)
 
 			status=True
