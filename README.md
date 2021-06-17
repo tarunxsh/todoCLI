@@ -1,14 +1,3 @@
-# CoronaSafe Engineering Fellowship Test Problem
-
-Thanks for applying to the CoronaSafe Engineering fellowship!
-
-In this step we want to see how you implement a command-line (CLI) program that lets you manage your todos.
-
-The specification for this problem is written down as tests. Since we haven’t actually implemented anything, the tests are currently failing. You have to solve the problem by implementing the application and getting all the tests to pass.
-
-Here's how it should work when you're done:
-
-[![Todo-CLI](https://res.cloudinary.com/sv-co/image/upload/v1607935139/fullstack-CEF/Todo-CLI/play-video-demo_fp50wp.png)](https://vimeo.com/490621534)
 ## Getting started
 
 1. Install Python: Python is usually installed by default on most modern systems. To check what your currently have, open a terminal and run the following command:
@@ -201,7 +190,3 @@ Use the `report` command to see the latest tally of pending and completed todos.
 $ ./todo report
 yyyy-mm-dd Pending : 1 Completed : 4
 ```
-
-## Improving README.md
-
-If you feel like we are missing out steps, feel free to make a pull request. [Github Repo](https://github.com/nseadlc-2020/package-todo-cli-task)
